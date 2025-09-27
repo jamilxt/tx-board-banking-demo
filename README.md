@@ -23,12 +23,46 @@ The demo simulates a banking system with customers, accounts, transfers, and led
 
 2. **Access the interfaces:**
    - **Spring Tx Board UI:** http://localhost:8080/tx-board/ui
+   - **Swagger UI:** http://localhost:8080/swagger-ui/index.html
    - **H2 Database Console:** http://localhost:8080/h2-console
    - **Demo Info:** http://localhost:8080/bank/info
 
-### Demo Scenarios
+## Automated Testing Scripts
 
-Execute these commands to trigger different Spring Tx Board features:
+For easy testing of all endpoints, use the provided cross-platform scripts in the `scripts/` folder:
+
+### Windows Users
+```cmd
+# Command Prompt
+scripts\test-endpoints.bat
+
+# PowerShell (Recommended)
+scripts\test-endpoints.ps1
+```
+
+### Linux/Mac Users
+```bash
+# Make executable first
+chmod +x scripts/test-endpoints.sh
+./scripts/test-endpoints.sh
+```
+
+### What the Scripts Test
+The automated scripts will execute all 8 demo scenarios in sequence:
+1. **Application Info** - Basic endpoint verification
+2. **Healthy Transfer** - Normal transaction (INFO level)
+3. **Slow Transfer** - Duration warnings (WARN level)
+4. **Connection Hold** - Connection occupancy warnings
+5. **Rollback Scenario** - Transaction failure handling
+6. **Nested Transactions** - Complex transaction trees
+7. **N+1 Query Problem** - Query efficiency warnings
+8. **TransactionTemplate** - Programmatic transactions
+
+**📁 See `scripts/README-SCRIPTS.md` for detailed script documentation and troubleshooting.**
+
+## Manual Demo Scenarios
+
+If you prefer to test endpoints manually, execute these commands to trigger different Spring Tx Board features:
 
 #### 1. Healthy Transfer (INFO logging)
 ```cmd
