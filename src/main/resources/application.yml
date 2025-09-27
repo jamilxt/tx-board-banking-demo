@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: tx-board-banking-demo
+
+  datasource:
+    url: jdbc:h2:mem:bankdemo;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+# Spring Tx Board Configuration
+sdlc:
+  pro:
+    spring:
+      tx:
+        board:
+          enable: true
+          log-type: DETAILS  # SIMPLE | DETAILS
+          alarming-threshold:
+            transaction: 500   # ms (small to trigger WARN easily)
+            connection: 250    # ms
+          duration-buckets: [100, 500, 1000, 2000, 5000]
+          storage: IN_MEMORY
+
+# Logging
+logging:
+  level:
+    com.sdlc.pro.txboard.demo.bank: DEBUG
+    org.springframework.transaction: DEBUG
