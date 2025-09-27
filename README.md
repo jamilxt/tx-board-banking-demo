@@ -79,7 +79,6 @@ Once the application is running, open your web browser and visit:
 
 #### Main Interfaces
 
-- **🏦 Banking Demo UI:** http://localhost:8080
 - **📊 Spring Tx Board Dashboard:** http://localhost:8080/tx-board/ui
 - **📋 API Documentation:** http://localhost:8080/swagger-ui/index.html
 - **💾 Database Console:** http://localhost:8080/h2-console
@@ -94,19 +93,27 @@ The Spring Tx Board dashboard shows:
 
 ## Testing the Demo
 
-### Option A: Manual Testing
+### Option A: Manual Testing via Swagger UI
 
-1. **Create a Customer:**
-   - Use the banking interface to create a new customer
-   - Watch the Spring Tx Board dashboard for transaction logs
+Since this is a REST-based application, you can test the banking operations using the Swagger UI interface:
 
-2. **Create Bank Accounts:**
-   - Create checking and savings accounts
-   - Monitor transaction performance in real-time
+1. **Access Swagger UI:** Open http://localhost:8080/swagger-ui/index.html in your browser
 
-3. **Make Transfers:**
-   - Transfer money between accounts
-   - Observe how Spring Tx Board captures transaction duration and status
+2. **Test Banking Operations:**
+   - **Healthy Transfer:** `POST /bank/transfer` - Execute a standard money transfer
+   - **Slow Transfer:** `POST /bank/transfer/slow` - Test a deliberately slow operation 
+   - **Connection Hold Transfer:** `POST /bank/transfer/hold-connection` - Test long database connections
+   - **Failed Transfer:** `POST /bank/transfer/rollback` - Test rollback scenarios
+   - **Nested Transfer:** `POST /bank/transfer/nested` - Test nested transactions
+   - **Portfolio Query:** `GET /bank/portfolio/nplus1` - Test N+1 query detection
+   - **Interest Accrual:** `POST /bank/accrual/template` - Test TransactionTemplate usage
+   - **Demo Info:** `GET /bank/info` - Get application information and available endpoints
+
+3. **Monitor Transactions:**
+   - Watch the Spring Tx Board dashboard (http://localhost:8080/tx-board/ui) for real-time transaction logs
+   - Observe transaction duration, status, and database connection usage
+
+**Note:** The demo uses pre-seeded customer and account data, so you can immediately test transfers without creating customers or accounts first.
 
 ### Option B: Automated Testing Scripts
 
