@@ -64,14 +64,23 @@ cd tx-board-banking-demo
 
 ### Step 4: Run the Demo Application
 
+Then run the demo:
+
 ```cmd
 mvn spring-boot:run
 ```
-
 **Wait for startup:** The application will start and you'll see log messages. Wait until you see something like:
 ```
 Started TxBoardBankingDemoApplication in X.XXX seconds
 ```
+
+**For Spring Boot 2 Demo:** If you want to see the Spring Boot 2 version of the demo application, checkout to the `master-boot2` branch:
+
+```cmd
+git checkout master-boot2
+```
+
+After switching branches, you may need to reinstall the library for the Spring Boot 2 version. Follow the README.md instructions of the `master-boot2` branch for specific setup requirements.
 
 ### Step 5: Access the Application
 
