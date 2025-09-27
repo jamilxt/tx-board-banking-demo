@@ -21,6 +21,19 @@ spring:
       enabled: true
       path: /h2-console
 
+# SpringDoc OpenAPI Configuration
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: alpha
+    tags-sorter: alpha
+    try-it-out-enabled: true
+    filter: true
+  packages-to-scan: com.sdlc.pro.txboard.demo.bank.controller
+  show-actuator: false
+
 # Spring Tx Board Configuration
 sdlc:
   pro:
