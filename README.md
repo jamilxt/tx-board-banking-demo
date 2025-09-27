@@ -41,6 +41,12 @@ git clone https://github.com/Mamun-Al-Babu-Shikder/spring-tx-board.git
 cd spring-tx-board
 ```
 
+> **Important for Spring Boot 2 Demo:** We need to checkout to the `master-boot2` branch before proceeding:
+> 
+> ```cmd
+> git checkout master-boot2
+> ```
+
 ### Step 2: Install Spring Tx Board Library Locally
 
 Before running the demo, you need to install the Spring Tx Board library to your local Maven repository:
