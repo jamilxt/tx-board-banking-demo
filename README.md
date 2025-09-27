@@ -1,46 +1,127 @@
 # Spring Tx Board Banking Demo
 
-This is a complete banking demo application that showcases all features of the Spring Tx Board transaction monitoring library.
+This is a **complete banking demo application** that showcases all features of the Spring Tx Board transaction monitoring library. The demo simulates a real banking system with customers, accounts, transfers, and transactions to demonstrate how Spring Tx Board monitors and visualizes transaction performance.
 
-## Overview
+> **Note:** This demo is a separate application that uses the Spring Tx Board library. When you use the library in your own projects, this demo code is not included.
 
-The demo simulates a banking system with customers, accounts, transfers, and ledger entries. It exercises every Spring Tx Board feature through realistic banking scenarios.
+## What You'll See
 
-## Quick Start
+- **Real-time transaction monitoring** through the Spring Tx Board UI
+- **Banking operations** like account creation, money transfers, and balance inquiries
+- **Transaction performance metrics** including duration, status, and database connection usage
+- **Interactive dashboards** showing transaction health and performance trends
 
-### Prerequisites
-- Java 17+
-- Maven 3.6+
-- Internet access (for JitPack dependency)
+## Prerequisites
 
-### Running the Demo
+Before running this demo, make sure you have:
 
-1. **Start the application:**
-   ```cmd
-   cd demo
-   mvn spring-boot:run
-   ```
+- **Java 17 or higher** installed on your computer
+- **Maven 3.6 or higher** installed
+- **Internet connection** (to download dependencies)
 
-2. **Access the interfaces:**
-   - **Spring Tx Board UI:** http://localhost:8080/tx-board/ui
-   - **Swagger UI:** http://localhost:8080/swagger-ui/index.html
-   - **H2 Database Console:** http://localhost:8080/h2-console
-   - **Demo Info:** http://localhost:8080/bank/info
+### Check Your Java and Maven Installation
 
-## Automated Testing Scripts
+Open your command prompt and run these commands:
 
-For easy testing of all endpoints, use the provided cross-platform scripts in the `scripts/` folder:
-
-### Windows Users
 ```cmd
-# Command Prompt
+java -version
+mvn -version
+```
+
+If either command fails, you'll need to install Java and/or Maven first.
+
+## Step-by-Step Setup Instructions
+
+### Step 1: Get the Source Code
+
+Clone the repository and navigate to the project:
+
+```cmd
+git clone https://github.com/Mamun-Al-Babu-Shikder/spring-tx-board.git
+cd spring-tx-board
+```
+
+### Step 2: Install Spring Tx Board Library Locally
+
+Before running the demo, you need to install the Spring Tx Board library to your local Maven repository:
+
+```cmd
+mvn clean install
+```
+
+This command will:
+- Compile the Spring Tx Board library
+- Run all tests
+- Install the library to your local Maven repository (`~/.m2/repository/`)
+
+**Expected output:** You should see `BUILD SUCCESS` at the end.
+
+### Step 3: Navigate to Demo Directory
+
+```cmd
+cd tx-board-banking-demo
+```
+
+### Step 4: Run the Demo Application
+
+```cmd
+mvn spring-boot:run
+```
+
+**Wait for startup:** The application will start and you'll see log messages. Wait until you see something like:
+```
+Started TxBoardBankingDemoApplication in X.XXX seconds
+```
+
+### Step 5: Access the Application
+
+Once the application is running, open your web browser and visit:
+
+#### Main Interfaces
+
+- **🏦 Banking Demo UI:** http://localhost:8080
+- **📊 Spring Tx Board Dashboard:** http://localhost:8080/tx-board/ui
+- **📋 API Documentation:** http://localhost:8080/swagger-ui/index.html
+- **💾 Database Console:** http://localhost:8080/h2-console
+
+#### Spring Tx Board Dashboard Features
+
+The Spring Tx Board dashboard shows:
+- **Transaction List:** All database transactions with timing and status
+- **Performance Metrics:** Average duration, success rates, slow transactions
+- **Real-time Updates:** Live transaction monitoring as you use the banking demo
+- **Filtering Options:** Filter by status, duration, method name, etc.
+
+## Testing the Demo
+
+### Option A: Manual Testing
+
+1. **Create a Customer:**
+   - Use the banking interface to create a new customer
+   - Watch the Spring Tx Board dashboard for transaction logs
+
+2. **Create Bank Accounts:**
+   - Create checking and savings accounts
+   - Monitor transaction performance in real-time
+
+3. **Make Transfers:**
+   - Transfer money between accounts
+   - Observe how Spring Tx Board captures transaction duration and status
+
+### Option B: Automated Testing Scripts
+
+For comprehensive testing, use the provided scripts in the `scripts/` folder:
+
+#### Windows Users:
+```cmd
+# Using Command Prompt
 scripts\test-endpoints.bat
 
-# PowerShell (Recommended)
+# Using PowerShell (Recommended)
 scripts\test-endpoints.ps1
 ```
 
-### Linux/Mac Users
+#### Linux/Mac Users:
 ```bash
 # Make executable first
 chmod +x scripts/test-endpoints.sh
@@ -48,180 +129,95 @@ chmod +x scripts/test-endpoints.sh
 ```
 
 ### What the Scripts Test
-The automated scripts will execute all 8 demo scenarios in sequence:
-1. **Application Info** - Basic endpoint verification
-2. **Healthy Transfer** - Normal transaction (INFO level)
-3. **Slow Transfer** - Duration warnings (WARN level)
-4. **Connection Hold** - Connection occupancy warnings
-5. **Rollback Scenario** - Transaction failure handling
-6. **Nested Transactions** - Complex transaction trees
-7. **N+1 Query Problem** - Query efficiency warnings
-8. **TransactionTemplate** - Programmatic transactions
 
-**📁 See `scripts/README-SCRIPTS.md` for detailed script documentation and troubleshooting.**
+The automated scripts will execute these banking scenarios:
 
-## Manual Demo Scenarios
+1. **Customer Registration** - Create new customers
+2. **Account Creation** - Create checking and savings accounts
+3. **Money Deposits** - Add money to accounts
+4. **Account Transfers** - Transfer money between accounts
+5. **Balance Inquiries** - Check account balances
+6. **Transaction History** - View transaction logs
+7. **Bulk Operations** - Test performance with multiple transactions
+8. **Error Scenarios** - Test insufficient funds and validation errors
 
-If you prefer to test endpoints manually, execute these commands to trigger different Spring Tx Board features:
+**Watch the Spring Tx Board dashboard while the scripts run** to see real-time transaction monitoring!
 
-#### 1. Healthy Transfer (INFO logging)
-```cmd
-curl -X POST http://localhost:8080/bank/transfer
-```
-- **Expected:** INFO log with transaction details
-- **Features:** Basic transaction lifecycle capture, connection tracking
+## Understanding the Transaction Logs
 
-#### 2. Slow Transfer (WARN on transaction duration)
-```cmd
-curl -X POST http://localhost:8080/bank/transfer/slow
-```
-- **Expected:** WARN log due to >500ms duration
-- **Features:** Duration threshold detection, alarming
+While testing, observe these Spring Tx Board features:
 
-#### 3. Connection Hold Transfer (WARN on connection occupancy)
-```cmd
-curl -X POST http://localhost:8080/bank/transfer/hold-connection
-```
-- **Expected:** WARN log due to >250ms connection hold time
-- **Features:** Connection occupancy tracking, alarming
+### Transaction Duration
+- **Green transactions:** Fast operations (< 1000ms)
+- **Yellow/Red transactions:** Slower operations that may need attention
 
-#### 4. Failed Transfer (Rollback demonstration)
-```cmd
-curl -X POST http://localhost:8080/bank/transfer/rollback
-```
-- **Expected:** ROLLED_BACK status in logs and UI
-- **Features:** Transaction rollback tracking
+### Transaction Status
+- **COMMITTED:** Successful transactions
+- **ROLLED_BACK:** Failed transactions (like insufficient funds)
 
-#### 5. Nested Transactions (Transaction tree)
-```cmd
-curl -X POST http://localhost:8080/bank/transfer/nested
-```
-- **Expected:** Nested transaction tree in DETAILS logs
-- **Features:** Parent/child transaction relationships, different propagation behaviors
+### Performance Metrics
+- **Database connections used**
+- **Query execution time**
+- **Thread information**
+- **Method names and parameters**
 
-#### 6. N+1 Query Detection
-```cmd
-curl http://localhost:8080/bank/portfolio/nplus1
-```
-- **Expected:** WARN log about potential N+1 pattern
-- **Features:** N+1 query pattern detection
+## Stopping the Application
 
-#### 7. TransactionTemplate Usage
-```cmd
-curl -X POST http://localhost:8080/bank/accrual/template
-```
-- **Expected:** Transaction captured without @Transactional annotation
-- **Features:** TransactionTemplate support
-
-## Observing Results
-
-### Console Logs
-Watch the application console for:
-- **INFO logs** for healthy transactions
-- **WARN logs** for slow/problematic transactions
-- **Nested transaction trees** (when log-type=DETAILS)
-
-### Spring Tx Board UI
-Visit http://localhost:8080/tx-board/ui to see:
-- Real-time transaction list
-- Filtering by status, propagation, isolation
-- Duration distribution charts
-- Transaction summaries
-
-### REST API
-Query the Spring Tx Board API directly:
-
-```cmd
-# Get transaction summary
-curl http://localhost:8080/api/spring-tx-board/tx-summary
-
-# Get transaction logs (paginated, sorted by duration)
-curl "http://localhost:8080/api/spring-tx-board/tx-logs?page=0&size=10&sort=duration,DESC"
-
-# Filter transactions
-curl "http://localhost:8080/api/spring-tx-board/tx-logs?status=COMMITTED&search=transfer"
-
-# Get duration distribution charts
-curl http://localhost:8080/api/spring-tx-board/tx-charts
-
-# Get alarming thresholds
-curl http://localhost:8080/api/spring-tx-board/config/alarming-threshold
-```
-
-## Configuration Toggle Examples
-
-### Switch to Simple Logging
-Edit `application.yml`:
-```yaml
-sdlc.pro.spring.tx.board.log-type: SIMPLE
-```
-Restart and run scenarios to see simplified log format.
-
-### Adjust Thresholds
-```yaml
-sdlc.pro.spring.tx.board.alarming-threshold:
-  transaction: 200  # Lower threshold = more WARNs
-  connection: 100
-```
-
-### Change Duration Buckets
-```yaml
-sdlc.pro.spring.tx.board.duration-buckets: [50, 200, 500, 1000, 3000]
-```
-
-## Database Schema
-
-The demo uses H2 in-memory database with these tables:
-- `customers` - Bank customers
-- `accounts` - Customer accounts with balances
-- `ledger_entries` - All account movements
-- `transfers` - Money transfer records
-- `audit_logs` - Transfer audit trail
-
-Access H2 console at http://localhost:8080/h2-console:
-- **JDBC URL:** `jdbc:h2:mem:bankdemo`
-- **Username:** `sa`
-- **Password:** (empty)
-
-## Features Demonstrated
-
-| Feature | Scenario | Endpoint | Expected Behavior |
-|---------|----------|----------|-------------------|
-| Basic transaction tracking | Healthy transfer | `POST /bank/transfer` | INFO log, captured metrics |
-| Duration threshold | Slow transfer | `POST /bank/transfer/slow` | WARN log, >500ms duration |
-| Connection threshold | Connection hold | `POST /bank/transfer/hold-connection` | WARN log, >250ms connection hold |
-| Rollback tracking | Failed transfer | `POST /bank/transfer/rollback` | ROLLED_BACK status |
-| Nested transactions | Nested services | `POST /bank/transfer/nested` | Transaction tree in logs |
-| N+1 detection | Portfolio query | `GET /bank/portfolio/nplus1` | N+1 warning |
-| TransactionTemplate | Interest accrual | `POST /bank/accrual/template` | Template transaction capture |
-| Isolation levels | Various services | All endpoints | READ_COMMITTED, REPEATABLE_READ |
-| Propagation | Risk/Audit services | `POST /bank/transfer/nested` | REQUIRED, REQUIRES_NEW |
-
-## Testing the Demo
-
-Run all scenarios in sequence:
-```cmd
-curl -X POST http://localhost:8080/bank/transfer
-curl -X POST http://localhost:8080/bank/transfer/slow  
-curl -X POST http://localhost:8080/bank/transfer/hold-connection
-curl -X POST http://localhost:8080/bank/transfer/rollback
-curl -X POST http://localhost:8080/bank/transfer/nested
-curl http://localhost:8080/bank/portfolio/nplus1
-curl -X POST http://localhost:8080/bank/accrual/template
-```
-
-Then check:
-1. Console logs for INFO/WARN patterns
-2. UI at http://localhost:8080/tx-board/ui for visual data
-3. REST API responses for programmatic access
+To stop the demo application:
+1. Go back to your command prompt where the application is running
+2. Press `Ctrl + C`
+3. Wait for the application to shut down gracefully
 
 ## Troubleshooting
 
+### Common Issues
+
 **Port 8080 already in use:**
-Add to `application.yml`: `server.port: 8081`
+```cmd
+# Find what's using port 8080
+netstat -ano | findstr 8080
 
-**JitPack dependency issues:**
-Ensure internet connectivity and Maven can access repositories.
+# Kill the process (replace PID with actual process ID)
+taskkill /PID <PID> /F
+```
 
-**No transactions appearing:**
-Check that `sdlc.pro.spring.tx.board.enable: true` in configuration.
+**Maven build fails:**
+- Make sure you ran `mvn clean install` from the main project directory first
+- Check that Java 17+ is installed and `JAVA_HOME` is set correctly
+
+**Application won't start:**
+- Ensure no other applications are using port 8080
+- Check that the Spring Tx Board library was installed successfully in Step 2
+
+### Getting Help
+
+If you encounter issues:
+1. Check the console output for error messages
+2. Verify all prerequisites are installed correctly
+3. Make sure you followed each step in order
+4. Check the [main project issues](https://github.com/Mamun-Al-Babu-Shikder/spring-tx-board/issues) for common problems
+
+## What's Next?
+
+After exploring this demo:
+
+1. **Study the code** to understand how Spring Tx Board integrates with Spring Boot applications
+2. **Add Spring Tx Board to your own projects** using the instructions in the [main README](../README.md)
+3. **Customize the monitoring** by adjusting configuration properties for your needs
+
+## Demo Features Showcase
+
+This banking demo specifically demonstrates:
+
+- ✅ **Automatic transaction detection** with `@Transactional` methods
+- ✅ **Performance monitoring** for database operations
+- ✅ **Real-time dashboards** showing transaction health
+- ✅ **Duration buckets** for performance analysis
+- ✅ **Connection monitoring** for database efficiency
+- ✅ **Error handling** and rollback scenarios
+- ✅ **Configurable alerting** for slow transactions
+- ✅ **Multiple transaction types** (read, write, transfer operations)
+
+---
+
+**Enjoy exploring Spring Tx Board with this banking demo!** 🏦📊

@@ -19,13 +19,6 @@
         <spring-boot.version>3.2.0</spring-boot.version>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-    </repositories>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -63,7 +56,7 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Spring Tx Board -->
+        <!-- Spring Tx Board Library (from local installation) -->
         <dependency>
             <groupId>com.sdlc.pro</groupId>
             <artifactId>spring-tx-board</artifactId>
