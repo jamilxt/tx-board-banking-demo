@@ -15,7 +15,7 @@ This is a **complete banking demo application** that showcases all features of t
 
 Before running this demo, make sure you have:
 
-- **Java 17 or higher** installed on your computer
+- **Java 8 or higher** installed on your computer
 - **Maven 3.6 or higher** installed
 - **Internet connection** (to download dependencies)
 
@@ -80,7 +80,7 @@ Once the application is running, open your web browser and visit:
 #### Main Interfaces
 
 - **📊 Spring Tx Board Dashboard:** http://localhost:8080/tx-board/ui
-- **📋 API Documentation:** http://localhost:8080/swagger-ui/index.html
+- **📋 API Documentation:** http://localhost:8080/swagger-ui/
 - **💾 Database Console:** http://localhost:8080/h2-console
 
 #### Spring Tx Board Dashboard Features
@@ -97,7 +97,7 @@ The Spring Tx Board dashboard shows:
 
 Since this is a REST-based application, you can test the banking operations using the Swagger UI interface:
 
-1. **Access Swagger UI:** Open http://localhost:8080/swagger-ui/index.html in your browser
+1. **Access Swagger UI:** Open http://localhost:8080/swagger-ui/ in your browser
 
 2. **Test Banking Operations:**
    - **Healthy Transfer:** `POST /bank/transfer` - Execute a standard money transfer
@@ -190,7 +190,7 @@ taskkill /PID <PID> /F
 
 **Maven build fails:**
 - Make sure you ran `mvn clean install` from the main project directory first
-- Check that Java 17+ is installed and `JAVA_HOME` is set correctly
+- Check that Java 8+ is installed and `JAVA_HOME` is set correctly
 
 **Application won't start:**
 - Ensure no other applications are using port 8080

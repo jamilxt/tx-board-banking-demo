@@ -13,10 +13,10 @@
     <description>Banking demo application to showcase Spring Tx Board features</description>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring-boot.version>3.2.0</spring-boot.version>
+        <spring-boot.version>2.4.0</spring-boot.version>
     </properties>
 
     <dependencyManagement>
@@ -42,11 +42,11 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
-        <!-- Swagger/OpenAPI Documentation -->
+        <!-- Swagger Documentation for Spring Boot 2 -->
         <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.2.0</version>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-boot-starter</artifactId>
+            <version>3.0.0</version>
         </dependency>
 
         <!-- Database -->
@@ -59,7 +59,7 @@
         <!-- Spring Tx Board Library (from local installation) -->
         <dependency>
             <groupId>com.sdlc.pro</groupId>
-            <artifactId>spring-tx-board</artifactId>
+            <artifactId>spring-tx-board-boot2</artifactId>
             <version>1.6.0</version>
         </dependency>
 

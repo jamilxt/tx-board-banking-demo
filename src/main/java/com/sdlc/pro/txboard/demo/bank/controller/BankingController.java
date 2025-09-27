@@ -171,13 +171,13 @@ public class BankingController {
             content = @Content(mediaType = "application/json"))
     })
     public ResponseEntity<Map<String, String>> getDemoInfo() {
-        return ResponseEntity.ok(Map.of(
-            "message", "Banking Demo Application",
-            "txBoardUI", "http://localhost:8080/tx-board/ui",
-            "h2Console", "http://localhost:8080/h2-console",
-            "swaggerUI", "http://localhost:8080/swagger-ui/index.html",
-            "apiDocs", "http://localhost:8080/v3/api-docs",
-            "endpoints", "POST /bank/transfer, /bank/transfer/slow, /bank/transfer/hold-connection, /bank/transfer/rollback, /bank/transfer/nested, GET /bank/portfolio/nplus1, POST /bank/accrual/template"
-        ));
+        Map<String, String> info = new java.util.HashMap<>();
+        info.put("message", "Banking Demo Application");
+        info.put("txBoardUI", "http://localhost:8080/tx-board/ui");
+        info.put("h2Console", "http://localhost:8080/h2-console");
+        info.put("swaggerUI", "http://localhost:8080/swagger-ui/index.html");
+        info.put("apiDocs", "http://localhost:8080/v3/api-docs");
+        info.put("endpoints", "POST /bank/transfer, /bank/transfer/slow, /bank/transfer/hold-connection, /bank/transfer/rollback, /bank/transfer/nested, GET /bank/portfolio/nplus1, POST /bank/accrual/template");
+        return ResponseEntity.ok(info);
     }
 }
