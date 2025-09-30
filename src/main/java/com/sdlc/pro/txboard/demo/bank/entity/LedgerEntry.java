@@ -1,37 +1,35 @@
 package com.sdlc.pro.txboard.demo.bank.entity;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "ledger_entries")
+@Table("ledger_entries")
 public class LedgerEntry {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id", nullable = false)
-    private Account account;
+    @Column("account_id")
+    private Long accountId;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column("type")
     private EntryType type;
 
-    @Column(nullable = false, precision = 19, scale = 2)
+    @Column("amount")
     private BigDecimal amount;
 
-    @Column(name = "created_at", nullable = false)
+    @Column("created_at")
     private LocalDateTime createdAt;
 
-    @Column(nullable = false)
+    @Column("reference")
     private String reference;
 
     public LedgerEntry() {}
 
-    public LedgerEntry(Account account, EntryType type, BigDecimal amount, String reference) {
-        this.account = account;
+    public LedgerEntry(Long accountId, EntryType type, BigDecimal amount, String reference) {
+        this.accountId = accountId;
         this.type = type;
         this.amount = amount;
         this.reference = reference;
@@ -51,12 +49,12 @@ public class LedgerEntry {
         this.id = id;
     }
 
-    public Account getAccount() {
-        return account;
+    public Long getAccountId() {
+        return accountId;
     }
 
-    public void setAccount(Account account) {
-        this.account = account;
+    public void setAccountId(Long accountId) {
+        this.accountId = accountId;
     }
 
     public EntryType getType() {

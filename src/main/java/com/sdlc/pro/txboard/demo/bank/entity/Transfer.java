@@ -1,41 +1,39 @@
 package com.sdlc.pro.txboard.demo.bank.entity;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "transfers")
+@Table("transfers")
 public class Transfer {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "from_account_id", nullable = false)
-    private Account fromAccount;
+    @Column("from_account_id")
+    private Long fromAccountId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "to_account_id", nullable = false)
-    private Account toAccount;
+    @Column("to_account_id")
+    private Long toAccountId;
 
-    @Column(nullable = false, precision = 19, scale = 2)
+    @Column("amount")
     private BigDecimal amount;
 
-    @Column(name = "created_at", nullable = false)
+    @Column("created_at")
     private LocalDateTime createdAt;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column("status")
     private TransferStatus status;
 
+    @Column("description")
     private String description;
 
     public Transfer() {}
 
-    public Transfer(Account fromAccount, Account toAccount, BigDecimal amount, String description) {
-        this.fromAccount = fromAccount;
-        this.toAccount = toAccount;
+    public Transfer(Long fromAccountId, Long toAccountId, BigDecimal amount, String description) {
+        this.fromAccountId = fromAccountId;
+        this.toAccountId = toAccountId;
         this.amount = amount;
         this.description = description;
         this.status = TransferStatus.PENDING;
@@ -55,20 +53,20 @@ public class Transfer {
         this.id = id;
     }
 
-    public Account getFromAccount() {
-        return fromAccount;
+    public Long getFromAccountId() {
+        return fromAccountId;
     }
 
-    public void setFromAccount(Account fromAccount) {
-        this.fromAccount = fromAccount;
+    public void setFromAccountId(Long fromAccountId) {
+        this.fromAccountId = fromAccountId;
     }
 
-    public Account getToAccount() {
-        return toAccount;
+    public Long getToAccountId() {
+        return toAccountId;
     }
 
-    public void setToAccount(Account toAccount) {
-        this.toAccount = toAccount;
+    public void setToAccountId(Long toAccountId) {
+        this.toAccountId = toAccountId;
     }
 
     public BigDecimal getAmount() {

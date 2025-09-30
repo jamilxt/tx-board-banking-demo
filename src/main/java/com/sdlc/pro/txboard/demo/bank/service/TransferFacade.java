@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 
@@ -23,23 +24,16 @@ public class TransferFacade {
     @Autowired
     private NotificationService notificationService;
 
-    // Scenario 5: Nested transactions (tree in logs)
+    // Scenario 5: Nested transactions (tree in logs) - Reactive version
     @Transactional
-    public Transfer transferWithNestedServices(Long fromAccountId, Long toAccountId, BigDecimal amount, String description) {
-        // Parent transaction
-
-        // Call risk service with REQUIRES_NEW
-        riskService.performRiskCheck(fromAccountId, toAccountId, amount);
-
-        // Perform the actual transfer
-        Transfer transfer = transferService.transfer(fromAccountId, toAccountId, amount, description);
-
-        // Call audit service with REQUIRES_NEW
-        auditService.recordTransfer(transfer);
-
-        // Call notification service (non-transactional)
-        notificationService.sendTransferNotification(transfer);
-
-        return transfer;
+    public Mono<Transfer> transferWithNestedServices(Long fromAccountId, Long toAccountId, BigDecimal amount, String description) {
+        // Parent transaction - reactive chain
+        return riskService.performRiskCheck(fromAccountId, toAccountId, amount)
+                .then(transferService.transfer(fromAccountId, toAccountId, amount, description))
+                .flatMap(transfer ->
+                    auditService.recordTransfer(transfer)
+                            .then(notificationService.sendTransferNotification(transfer))
+                            .thenReturn(transfer)
+                );
     }
 }

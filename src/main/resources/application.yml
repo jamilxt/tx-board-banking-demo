@@ -2,19 +2,15 @@ spring:
   application:
     name: tx-board-banking-demo
 
-  datasource:
-    url: jdbc:h2:mem:bankdemo;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
-    driver-class-name: org.h2.Driver
+  r2dbc:
+    url: r2dbc:h2:mem:///bankdemo;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
     username: sa
     password: ""
 
-  jpa:
-    hibernate:
-      ddl-auto: create
-    show-sql: false
-    properties:
-      hibernate:
-        format_sql: true
+  data:
+    r2dbc:
+      repositories:
+        enabled: true
 
   h2:
     console:
@@ -51,5 +47,4 @@ sdlc:
 # Logging
 logging:
   level:
-    com.sdlc.pro.txboard.demo.bank: DEBUG
-    org.springframework.transaction: DEBUG
+    io.r2dbc.h2: DEBUG

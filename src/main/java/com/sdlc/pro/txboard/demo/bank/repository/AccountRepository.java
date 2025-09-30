@@ -1,24 +1,19 @@
 package com.sdlc.pro.txboard.demo.bank.repository;
 
 import com.sdlc.pro.txboard.demo.bank.entity.Account;
-import com.sdlc.pro.txboard.demo.bank.entity.Customer;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.r2dbc.repository.Query;
+import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
-import java.util.Optional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Repository
-public interface AccountRepository extends JpaRepository<Account, Long> {
+public interface AccountRepository extends R2dbcRepository<Account, Long> {
 
-    Optional<Account> findByIban(String iban);
+    Mono<Account> findByIban(String iban);
 
-    List<Account> findByCustomer(Customer customer);
+    Flux<Account> findByCustomerId(Long customerId);
 
-    @Query("SELECT a FROM Account a WHERE a.status = 'ACTIVE'")
-    List<Account> findActiveAccounts();
-
-    @Query("SELECT a FROM Account a WHERE a.balance > 0")
-    List<Account> findAccountsWithPositiveBalance();
+    @Query("SELECT * FROM accounts WHERE status = 'ACTIVE'")
+    Flux<Account> findActiveAccounts();
 }

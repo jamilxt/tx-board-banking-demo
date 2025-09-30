@@ -12,9 +12,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -36,10 +35,7 @@ public class BankingController {
     @Autowired
     private AccrualService accrualService;
 
-    @Autowired
-    private TransactionTemplate transactionTemplate;
-
-    // Scenario 1: Healthy transfer (INFO)
+    // Scenario 1: Healthy transfer (INFO) - Reactive version
     @PostMapping("/transfer")
     @Operation(
         summary = "Execute a healthy transfer",
@@ -51,13 +47,12 @@ public class BankingController {
         @ApiResponse(responseCode = "400", description = "Invalid transfer request"),
         @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<Transfer> transfer() {
+    public Mono<Transfer> transfer() {
         // Use predefined accounts from seed data
-        Transfer result = transferService.transfer(1L, 2L, new BigDecimal("100.00"), "Demo healthy transfer");
-        return ResponseEntity.ok(result);
+        return transferService.transfer(1L, 2L, new BigDecimal("100.00"), "Demo healthy transfer");
     }
 
-    // Scenario 2: Slow transfer (WARN on tx duration)
+    // Scenario 2: Slow transfer (WARN on tx duration) - Reactive version
     @PostMapping("/transfer/slow")
     @Operation(
         summary = "Execute a slow transfer",
@@ -69,46 +64,23 @@ public class BankingController {
         @ApiResponse(responseCode = "400", description = "Invalid transfer request"),
         @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<Transfer> transferSlow() {
-        Transfer result = transferService.transferSlow(1L, 3L, new BigDecimal("50.00"), "Demo slow transfer");
-        return ResponseEntity.ok(result);
+    public Mono<Transfer> transferSlow() {
+        return transferService.transferSlow(1L, 3L, new BigDecimal("50.00"), "Demo slow transfer");
     }
 
-    // Scenario 3: Long-held connection (WARN on connection occupancy)
-    @PostMapping("/transfer/hold-connection")
-    @Operation(
-        summary = "Execute transfer with long-held connection",
-        description = "Performs a transfer while holding database connection for extended time. This will trigger connection occupancy warnings in Spring Tx Board."
-    )
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Transfer with connection hold completed successfully",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Transfer.class))),
-        @ApiResponse(responseCode = "400", description = "Invalid transfer request"),
-        @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
-    public ResponseEntity<Transfer> transferHoldConnection() {
-        Transfer result = transferService.transferHoldingConnection(2L, 4L, new BigDecimal("75.00"), "Demo connection hold transfer");
-        return ResponseEntity.ok(result);
-    }
-
-    // Scenario 4: Rollback/Error paths
+    // Scenario 3: Rollback/Error paths - Reactive version
     @PostMapping("/transfer/rollback")
     @Operation(
         summary = "Execute transfer that will rollback",
         description = "Attempts a transfer that is designed to fail and rollback. This demonstrates error handling and rollback scenarios in Spring Tx Board."
     )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Rollback scenario completed (with error message)",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
-        @ApiResponse(responseCode = "500", description = "Expected failure for demonstration")
+        @ApiResponse(responseCode = "500", description = "Transfer failed and rolled back"),
+        @ApiResponse(responseCode = "400", description = "Invalid transfer request")
     })
-    public ResponseEntity<String> transferRollback() {
-        try {
-            transferService.transferAndFail(1L, 2L, new BigDecimal("25.00"), "Demo failed transfer");
-            return ResponseEntity.ok("This should not happen");
-        } catch (Exception e) {
-            return ResponseEntity.ok("Transfer failed as expected: " + e.getMessage());
-        }
+    public Mono<Transfer> transferRollback() {
+        return transferService.transferAndFail(2L, 3L, new BigDecimal("25.00"), "Demo rollback transfer")
+                .onErrorReturn(new Transfer()); // Return empty transfer on error for demo purposes
     }
 
     // Scenario 5: Nested transactions (tree in logs)
@@ -123,9 +95,8 @@ public class BankingController {
         @ApiResponse(responseCode = "400", description = "Invalid transfer request"),
         @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<Transfer> transferNested() {
-        Transfer result = transferFacade.transferWithNestedServices(3L, 4L, new BigDecimal("200.00"), "Demo nested transfer");
-        return ResponseEntity.ok(result);
+    public Mono<Transfer> transferNested() {
+        return transferFacade.transferWithNestedServices(3L, 4L, new BigDecimal("200.00"), "Demo nested transfer");
     }
 
     // Scenario 7: N+1 detection (WARN)
@@ -139,9 +110,8 @@ public class BankingController {
             content = @Content(mediaType = "application/json")),
         @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<Map<String, Object>> portfolioNPlusOne() {
-        Map<String, Object> result = portfolioService.customerPortfolioNPlusOne();
-        return ResponseEntity.ok(result);
+    public Mono<Map<String, Object>> portfolioNPlusOne() {
+        return portfolioService.customerPortfolioNPlusOne();
     }
 
     // Scenario 8: TransactionTemplate
@@ -155,9 +125,8 @@ public class BankingController {
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
         @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<String> accrualTemplate() {
-        accrualService.postDailyInterest(transactionTemplate);
-        return ResponseEntity.ok("Daily interest accrual completed");
+    public Mono<String> accrualTemplate() {
+        return accrualService.postDailyInterest();
     }
 
     // Helper endpoint to get demo info
@@ -170,14 +139,14 @@ public class BankingController {
         @ApiResponse(responseCode = "200", description = "Demo information retrieved successfully",
             content = @Content(mediaType = "application/json"))
     })
-    public ResponseEntity<Map<String, String>> getDemoInfo() {
-        return ResponseEntity.ok(Map.of(
+    public Mono<Map<String, String>> getDemoInfo() {
+        return Mono.just(Map.of(
             "message", "Banking Demo Application",
             "txBoardUI", "http://localhost:8080/tx-board/ui",
             "h2Console", "http://localhost:8080/h2-console",
             "swaggerUI", "http://localhost:8080/swagger-ui/index.html",
             "apiDocs", "http://localhost:8080/v3/api-docs",
-            "endpoints", "POST /bank/transfer, /bank/transfer/slow, /bank/transfer/hold-connection, /bank/transfer/rollback, /bank/transfer/nested, GET /bank/portfolio/nplus1, POST /bank/accrual/template"
+            "endpoints", "POST /bank/transfer, /bank/transfer/slow, /bank/transfer/rollback, /bank/transfer/nested, GET /bank/portfolio/nplus1, POST /bank/accrual/template"
         ));
     }
 }

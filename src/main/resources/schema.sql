@@ -1,0 +1,61 @@
+-- Database schema for Banking Demo Application (R2DBC compatible)
+
+-- Create customers table
+CREATE TABLE IF NOT EXISTS customers (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+);
+
+-- Create accounts table
+CREATE TABLE IF NOT EXISTS accounts (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    customer_id BIGINT NOT NULL,
+    iban VARCHAR(34) NOT NULL UNIQUE,
+    balance DECIMAL(19,2) NOT NULL DEFAULT 0.00,
+    currency VARCHAR(3) NOT NULL DEFAULT 'USD',
+    status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
+    FOREIGN KEY (customer_id) REFERENCES customers(id)
+);
+
+-- Create transfers table
+CREATE TABLE IF NOT EXISTS transfers (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    from_account_id BIGINT NOT NULL,
+    to_account_id BIGINT NOT NULL,
+    amount DECIMAL(19,2) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(20) NOT NULL DEFAULT 'PENDING',
+    description VARCHAR(500),
+    FOREIGN KEY (from_account_id) REFERENCES accounts(id),
+    FOREIGN KEY (to_account_id) REFERENCES accounts(id)
+);
+
+-- Create ledger_entries table
+CREATE TABLE IF NOT EXISTS ledger_entries (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    account_id BIGINT NOT NULL,
+    type VARCHAR(10) NOT NULL,
+    amount DECIMAL(19,2) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    reference VARCHAR(255) NOT NULL,
+    FOREIGN KEY (account_id) REFERENCES accounts(id)
+);
+
+-- Create audit_logs table
+CREATE TABLE IF NOT EXISTS audit_logs (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    transfer_id BIGINT,
+    message TEXT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (transfer_id) REFERENCES transfers(id)
+);
+
+-- Create indexes for better performance
+CREATE INDEX IF NOT EXISTS idx_accounts_customer_id ON accounts(customer_id);
+CREATE INDEX IF NOT EXISTS idx_accounts_iban ON accounts(iban);
+CREATE INDEX IF NOT EXISTS idx_transfers_from_account ON transfers(from_account_id);
+CREATE INDEX IF NOT EXISTS idx_transfers_to_account ON transfers(to_account_id);
+CREATE INDEX IF NOT EXISTS idx_transfers_created_at ON transfers(created_at);
+CREATE INDEX IF NOT EXISTS idx_ledger_entries_account_id ON ledger_entries(account_id);
+CREATE INDEX IF NOT EXISTS idx_ledger_entries_created_at ON ledger_entries(created_at);
+CREATE INDEX IF NOT EXISTS idx_audit_logs_transfer_id ON audit_logs(transfer_id);

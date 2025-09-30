@@ -1,40 +1,34 @@
 package com.sdlc.pro.txboard.demo.bank.entity;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 import java.math.BigDecimal;
-import java.util.List;
 
-@Entity
-@Table(name = "accounts")
+@Table("accounts")
 public class Account {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", nullable = false)
-    private Customer customer;
+    @Column("customer_id")
+    private Long customerId;
 
-    @Column(nullable = false, unique = true)
+    @Column("iban")
     private String iban;
 
-    @Column(nullable = false, precision = 19, scale = 2)
+    @Column("balance")
     private BigDecimal balance;
 
-    @Column(nullable = false, length = 3)
+    @Column("currency")
     private String currency;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column("status")
     private AccountStatus status;
-
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<LedgerEntry> ledgerEntries;
 
     public Account() {}
 
-    public Account(Customer customer, String iban, BigDecimal balance, String currency, AccountStatus status) {
-        this.customer = customer;
+    public Account(Long customerId, String iban, BigDecimal balance, String currency, AccountStatus status) {
+        this.customerId = customerId;
         this.iban = iban;
         this.balance = balance;
         this.currency = currency;
@@ -54,12 +48,12 @@ public class Account {
         this.id = id;
     }
 
-    public Customer getCustomer() {
-        return customer;
+    public Long getCustomerId() {
+        return customerId;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
     }
 
     public String getIban() {
@@ -92,13 +86,5 @@ public class Account {
 
     public void setStatus(AccountStatus status) {
         this.status = status;
-    }
-
-    public List<LedgerEntry> getLedgerEntries() {
-        return ledgerEntries;
-    }
-
-    public void setLedgerEntries(List<LedgerEntry> ledgerEntries) {
-        this.ledgerEntries = ledgerEntries;
     }
 }

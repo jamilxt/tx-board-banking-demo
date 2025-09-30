@@ -1,15 +1,14 @@
 package com.sdlc.pro.txboard.demo.bank.repository;
 
 import com.sdlc.pro.txboard.demo.bank.entity.Customer;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.r2dbc.repository.Query;
+import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
 
 @Repository
-public interface CustomerRepository extends JpaRepository<Customer, Long> {
+public interface CustomerRepository extends R2dbcRepository<Customer, Long> {
 
-    @Query("SELECT c FROM Customer c ORDER BY c.name")
-    List<Customer> findAllOrderByName();
+    @Query("SELECT * FROM customers ORDER BY name")
+    Flux<Customer> findAllOrderByName();
 }

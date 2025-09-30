@@ -1,14 +1,12 @@
 package com.sdlc.pro.txboard.demo.bank.repository;
 
 import com.sdlc.pro.txboard.demo.bank.entity.AuditLog;
-import com.sdlc.pro.txboard.demo.bank.entity.Transfer;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
 
 @Repository
-public interface AuditLogRepository extends JpaRepository<AuditLog, Long> {
+public interface AuditLogRepository extends R2dbcRepository<AuditLog, Long> {
 
-    List<AuditLog> findByTransferOrderByCreatedAtDesc(Transfer transfer);
+    Flux<AuditLog> findByTransferIdOrderByCreatedAtDesc(Long transferId);
 }

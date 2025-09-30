@@ -1,29 +1,28 @@
 package com.sdlc.pro.txboard.demo.bank.entity;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "audit_logs")
+@Table("audit_logs")
 public class AuditLog {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "transfer_id")
-    private Transfer transfer;
+    @Column("transfer_id")
+    private Long transferId;
 
-    @Column(nullable = false)
+    @Column("message")
     private String message;
 
-    @Column(name = "created_at", nullable = false)
+    @Column("created_at")
     private LocalDateTime createdAt;
 
     public AuditLog() {}
 
-    public AuditLog(Transfer transfer, String message) {
-        this.transfer = transfer;
+    public AuditLog(Long transferId, String message) {
+        this.transferId = transferId;
         this.message = message;
         this.createdAt = LocalDateTime.now();
     }
@@ -37,12 +36,12 @@ public class AuditLog {
         this.id = id;
     }
 
-    public Transfer getTransfer() {
-        return transfer;
+    public Long getTransferId() {
+        return transferId;
     }
 
-    public void setTransfer(Transfer transfer) {
-        this.transfer = transfer;
+    public void setTransferId(Long transferId) {
+        this.transferId = transferId;
     }
 
     public String getMessage() {
